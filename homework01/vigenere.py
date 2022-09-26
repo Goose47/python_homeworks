@@ -10,7 +10,39 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     'LXFOPVEFRNHR'
     """
     ciphertext = ""
-    # PUT YOUR CODE HERE
+
+    az_min = 97
+    az_max = 122
+    AZ_min = 65
+    AZ_max = 90
+
+    keyword = keyword.upper()
+    while len(keyword) < len(plaintext):
+        keyword += keyword
+
+    for index, letter in enumerate(plaintext):
+        code = ord(letter)
+
+        if not ((AZ_min <= code <= AZ_max) or (az_min <= code <= az_max)):
+            ciphertext += letter
+            continue
+
+        shift_letter = keyword[index]
+        shift = ord(shift_letter) - AZ_min
+
+        if AZ_min <= code <= AZ_max:
+            if code + shift - AZ_max > 0:
+                next_letter = chr(AZ_min + (code + shift - AZ_max) - 1)
+            else:
+                next_letter = chr(code + shift)
+        else:
+            if code + shift - az_max > 0:
+                next_letter = chr(az_min + (code + shift - az_max) - 1)
+            else:
+                next_letter = chr(code + shift)
+
+        ciphertext += next_letter
+
     return ciphertext
 
 
@@ -28,3 +60,4 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     plaintext = ""
     # PUT YOUR CODE HERE
     return plaintext
+
