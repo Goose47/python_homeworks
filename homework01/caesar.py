@@ -58,7 +58,32 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    # PUT YOUR CODE HERE
+
+    az_min = 97
+    az_max = 122
+    AZ_min = 65
+    AZ_max = 90
+
+    for letter in ciphertext:
+        code = ord(letter) - shift
+
+        if not ((AZ_min - shift <= code <= AZ_max) or (az_min - shift <= code <= az_max)):
+            plaintext += letter
+            continue
+
+        if AZ_min - shift <= code <= AZ_max:
+            if AZ_min - code > 0:
+                next_letter = chr(AZ_max - (AZ_min - code) + 1)
+            else:
+                next_letter = chr(code)
+        else:
+            if az_min - code > 0:
+                next_letter = chr(az_max - (az_min - code) + 1)
+            else:
+                next_letter = chr(code)
+
+        plaintext += next_letter
+
     return plaintext
 
 
@@ -70,7 +95,3 @@ def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
     # PUT YOUR CODE HERE
     return best_shift
 
-
-if __name__ == '__main__':
-    c = encrypt_caesar('PYThon', 3)
-    print(c)
