@@ -36,7 +36,25 @@ def gcd(a: int, b: int) -> int:
     >>> gcd(3, 7)
     1
     """
-    # PUT YOUR CODE HERE
+
+    if a == b:
+        return a
+
+    if a == 0:
+        return b
+
+    if b == 0:
+        return a
+
+    while True:
+        if a < b:
+            a, b = b, a
+
+        if a % b == 0:
+            return b
+
+        a = a % b
+
     pass
 
 
