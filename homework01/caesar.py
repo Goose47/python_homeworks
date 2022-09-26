@@ -28,7 +28,7 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
             ciphertext += letter
             continue
 
-        if code <= AZ_max + shift:
+        if AZ_min + shift <= code <= AZ_max + shift:
             if code - AZ_max > 0:
                 next_letter = chr(AZ_min + (code - AZ_max) - 1)
             else:
@@ -71,7 +71,7 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
             plaintext += letter
             continue
 
-        if AZ_min - shift <= code <= AZ_max:
+        if AZ_min - shift <= code <= AZ_max - shift:
             if AZ_min - code > 0:
                 next_letter = chr(AZ_max - (AZ_min - code) + 1)
             else:
