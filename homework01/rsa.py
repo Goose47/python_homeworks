@@ -66,8 +66,25 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+
+    a = phi
+    b = e
+
+    div = []
+
+    while a % b != 0:
+        div.insert(0, a // b)
+        a, b = b, a % b
+
+    old_x, old_y = 0, 1
+    new_x, new_y = 0, 1
+
+    for el in div:
+        new_x = old_y
+        new_y = old_x - old_y * el
+        old_x, old_y = new_x, new_y
+
+    return new_y % phi
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
@@ -119,6 +136,7 @@ def decrypt(pk: tp.Tuple[int, int], ciphertext: tp.List[int]) -> str:
 
 
 if __name__ == "__main__":
+    print(multiplicative_inverse(7, 40))
     print("RSA Encrypter/ Decrypter")
     p = int(input("Enter a prime number (17, 19, 23, etc): "))
     q = int(input("Enter another prime number (Not one you entered above): "))
