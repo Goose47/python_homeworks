@@ -1,5 +1,6 @@
 import random
 import typing as tp
+import math
 
 
 def is_prime(n: int) -> bool:
@@ -13,8 +14,17 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
-    # PUT YOUR CODE HERE
-    pass
+    if n == 1:
+        return False
+
+    if n == 2 or n == 3:
+        return True
+
+    for i in range(2, math.floor(math.ceil(n))):
+        if n % i == 0:
+            return False
+
+    return True
 
 
 def gcd(a: int, b: int) -> int:
