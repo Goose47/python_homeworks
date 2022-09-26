@@ -58,6 +58,37 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     'ATTACKATDAWN'
     """
     plaintext = ""
-    # PUT YOUR CODE HERE
-    return plaintext
 
+    az_min = 97
+    az_max = 122
+    AZ_min = 65
+    AZ_max = 90
+
+    keyword = keyword.upper()
+    while len(keyword) < len(ciphertext):
+        keyword += keyword
+
+    for index, letter in enumerate(ciphertext):
+        code = ord(letter)
+
+        shift_letter = keyword[index]
+        shift = ord(shift_letter) - AZ_min
+
+        if not ((AZ_min - shift <= code - shift <= AZ_max - shift) or (az_min - shift <= code - shift <= az_max - shift)):
+            plaintext += letter
+            continue
+
+        if AZ_min - shift <= code - shift <= AZ_max - shift:
+            if AZ_min - (code - shift) > 0:
+                next_letter = chr(AZ_max - (AZ_min - (code - shift)) + 1)
+            else:
+                next_letter = chr(code - shift)
+        else:
+            if az_min - (code - shift) > 0:
+                next_letter = chr(az_max - (az_min - (code - shift)) + 1)
+            else:
+                next_letter = chr(code - shift)
+
+        plaintext += next_letter
+
+    return plaintext
