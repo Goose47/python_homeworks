@@ -42,7 +42,16 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    pass
+    groupped_list = []
+
+    for row_num in range(n):
+        row = []
+        for i, val in enumerate(values):
+            if i // n == row_num:
+                row.append(val)
+        groupped_list.append(row)
+
+    return groupped_list
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
