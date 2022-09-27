@@ -42,16 +42,16 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    groupped_list = []
+    grouped_list = []
 
     for row_num in range(n):
         row = []
         for i, val in enumerate(values):
             if i // n == row_num:
                 row.append(val)
-        groupped_list.append(row)
+        grouped_list.append(row)
 
-    return groupped_list
+    return grouped_list
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -64,7 +64,9 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    pass
+    row, _ = pos
+
+    return grid[row]
 
 
 def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -77,7 +79,14 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    pass
+    _, col = pos
+
+    column = []
+
+    for item in grid:
+        column.append(item[col])
+
+    return column
 
 
 def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -91,7 +100,25 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    pass
+
+    block_els = int(len(grid[0]) / 3)  # number of elements in the block row/column
+
+    row, col = pos
+
+    block_row_num = (row // 3) + 1
+    block_col_num = (col // 3) + 1
+
+    corner_el = ((block_row_num - 1) * block_els, (block_col_num - 1) * block_els)  # the corner element of selected block
+    corner_row, corner_col = corner_el
+
+    block = []
+
+    for i in range(corner_row, corner_row + block_els):
+        row = grid[i]
+        for col_i, el in enumerate(row):
+            if col_i // block_els == block_col_num - 1:
+                block.append(el)
+    return block
 
 
 def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[int, int]]:
