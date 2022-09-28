@@ -131,7 +131,19 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    pass
+    row = None
+    col = None
+
+    for row_index, els_row in enumerate(grid):
+        for col_index, el in enumerate(els_row):
+            if el == '.':
+                row = row_index
+                col = col_index
+
+    if not row and not col:
+        return None
+    else:
+        return (row, col)
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
@@ -145,8 +157,18 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    available_elements = ['.']
+    for i in range(len(grid[0])):
+        available_elements.append(str(i + 1))
+    available_elements = set(available_elements)
 
+    row_elements = get_row(grid, pos)
+    col_elements = get_col(grid, pos)
+    block_elements = get_block(grid, pos)
+
+    existing_elements = set(row_elements + col_elements + block_elements)
+
+    return available_elements - existing_elements
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     """ Решение пазла, заданного в grid """
