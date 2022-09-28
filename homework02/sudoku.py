@@ -200,7 +200,25 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
     # TODO: Add doctests with bad puzzles
+    block_els_count = len(solution[0])
 
+    for i in range(0, block_els_count):
+        row = get_row(solution, (i, 0))
+        col = get_col(solution, (0, i))
+        if len(row) != len(set(row)) or len(col) != len(set(col)):
+            return False
+
+    block_els_count = int(block_els_count / 3)
+
+    for i in range(3):
+        for j in range(3):
+            block = get_block(solution, (i * block_els_count, j * block_els_count))
+            if '.' in block:
+                return False
+            if len(block) != len(set(block)):
+                return False
+
+    return True
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
