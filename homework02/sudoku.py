@@ -1,5 +1,6 @@
 import pathlib
 import typing as tp
+import random
 
 T = tp.TypeVar("T")
 
@@ -154,6 +155,7 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     available_elements = ['.']
     for i in range(len(grid[0])):
         available_elements.append(str(i + 1))
+
     available_elements = set(available_elements)
 
     row_elements = get_row(grid, pos)
@@ -243,7 +245,34 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    pass
+    if N > 81:
+        N = 81
+    unknown_els = 0
+
+    grid = []
+
+    for i in range(9):
+        row = []
+        for j in range(9):
+            row.append('.')
+
+        grid.append(row)
+
+    grid = solve(grid)
+
+    while unknown_els != 81 - N:
+        row = random.randint(0, 8)
+        col = random.randint(0, 8)
+
+        el = grid[row][col]
+
+        if el == '.':
+            continue
+        grid[row][col] = '.'
+
+        unknown_els += 1
+
+    return grid
 
 
 if __name__ == "__main__":
