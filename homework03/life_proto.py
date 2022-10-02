@@ -55,7 +55,7 @@ class GameOfLife:
 
             # Отрисовка списка клеток
             # Выполнение одного шага игры (обновление состояния ячеек)
-            # PUT YOUR CODE HERE
+
 
             pygame.display.flip()
             clock.tick(self.speed)
@@ -79,7 +79,15 @@ class GameOfLife:
         out : Grid
             Матрица клеток размером `cell_height` х `cell_width`.
         """
-        pass
+        grid = []
+        for i in range(self.cell_height):
+            grid.append([])
+            for _ in range(self.cell_width):
+                if randomize:
+                    grid[i].append(random.randint(0, 1))
+                else:
+                    grid[i].append(0)
+        return grid
 
     def draw_grid(self) -> None:
         """
@@ -117,3 +125,8 @@ class GameOfLife:
             Новое поколение клеток.
         """
         pass
+
+
+# if __name__ == '__main__':
+#     game = GameOfLife(320, 240, 20)
+#     game.run()
