@@ -57,7 +57,7 @@ class GameOfLife:
             self.draw_lines()
             # Отрисовка списка клеток
             # Выполнение одного шага игры (обновление состояния ячеек)
-
+            self.grid = self.get_next_generation()
             pygame.display.flip()
             clock.tick(self.speed)
         pygame.quit()
@@ -125,7 +125,20 @@ class GameOfLife:
         out : Cells
             Список соседних клеток.
         """
-        pass
+        neighbours = []
+        x, y = cell
+        x, y = x // self.cell_size, y // self.cell_size
+
+        for i in range(x - 1, x + 2):
+            for j in range(y - 1, y + 2):
+
+                if i == x and y == j:
+                    continue
+                elif (-1 < i < len(self.grid) and
+                      -1 < j < len(self.grid[0])):
+                    neighbours.append(self.grid[i][j])
+
+        return neighbours
 
     def get_next_generation(self) -> Grid:
         """
@@ -136,7 +149,24 @@ class GameOfLife:
         out : Grid
             Новое поколение клеток.
         """
-        pass
+        grid = []
+        for i in range(self.cell_height):
+            grid.append([])
+            for _ in range(self.cell_width):
+                grid[i].append(0)
+
+        for i, row in enumerate(self.grid):
+            for j, el in enumerate(row):
+                alive_neighbours = sum(self.get_neighbours((i * self.cell_size, j * self.cell_size)))
+
+                if alive_neighbours in (2, 3) and self.grid[i][j] == 1:
+                    grid[i][j] = 1
+                elif alive_neighbours == 3 and self.grid[i][j] == 0:
+                    grid[i][j] = 1
+                else:
+                    grid[i][j] = 0
+
+        return grid
 
 
 if __name__ == '__main__':
