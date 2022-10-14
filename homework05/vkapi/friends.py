@@ -3,7 +3,7 @@ import math
 import time
 import typing as tp
 
-from vkapi import config, session
+from vkapi import session, config
 from vkapi.exceptions import APIError
 
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
@@ -28,7 +28,15 @@ def get_friends(
     :param fields: Список полей, которые нужно получить для каждого пользователя.
     :return: Список идентификаторов друзей пользователя или список пользователей.
     """
-    pass
+    access_token = config.VK_CONFIG['access_token']
+    v = config.VK_CONFIG['version']
+
+    query = f'/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&count={count}&offset={offset}&v={v}'
+    response = session.get(query).json()['response']
+
+    friends_response = FriendsResponse(response['count'], response['items'])
+
+    return friends_response
 
 
 class MutualFriends(tp.TypedDict):
@@ -57,4 +65,24 @@ def get_mutual(
     :param offset: Смещение, необходимое для выборки определенного подмножества общих друзей.
     :param progress: Callback для отображения прогресса.
     """
-    pass
+    access_token = config.VK_CONFIG['access_token']
+    v = config.VK_CONFIG['version']
+
+    if target_uid:
+        query = f'/friends.getMutual?access_token={access_token}&source_uid={source_uid}&target_uid={target_uid}&order={order}&count={count}&offset={offset}&v={v}'
+        return session.get(query).json()['response']
+
+    friends_response = []
+    requests_number = int(math.ceil(len(target_uids) / 100))
+    for i in range(requests_number):
+        query = f'/friends.getMutual?access_token={access_token}&source_uid={source_uid}&target_uids={target_uids}&order={order}&count={count}&offset={100 * i}&v={v}'
+        response = session.get(query).json()['response']
+
+        for friend in response:
+            element = {'id': friend['id'], 'common_friends': friend['common_friends'],
+                       'common_count': friend['common_count']}
+            friends_response.append(MutualFriends(element))
+        if i % 3 == 0:
+            time.sleep(1)
+
+    return friends_response
