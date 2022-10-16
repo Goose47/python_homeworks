@@ -3,8 +3,6 @@ from collections import defaultdict
 
 import community as community_louvain
 import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.rcParams['backend'] = "Gtk3Agg"
 import networkx as nx
 import pandas as pd
 
