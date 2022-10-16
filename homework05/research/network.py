@@ -3,6 +3,8 @@ from collections import defaultdict
 
 import community as community_louvain
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['backend'] = "Gtk3Agg"
 import networkx as nx
 import pandas as pd
 
@@ -21,7 +23,9 @@ def ego_network(
     net = []
 
     if not friends:
-        pass
+        friends = get_friends(user_id)
+        active_users = [user["id"] for user in friends.items if not user.get("deactivated")]
+        friends = active_users
 
     mutual_friends = get_mutual(user_id, target_uids=friends)
 

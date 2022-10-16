@@ -68,6 +68,9 @@ def get_mutual(
     access_token = config.VK_CONFIG['access_token']
     v = config.VK_CONFIG['version']
 
+    if not count:
+        count = 0
+
     if target_uid:
         query = f'/friends.getMutual?access_token={access_token}&source_uid={source_uid}&target_uid={target_uid}&order={order}&count={count}&offset={offset}&v={v}'
         return session.get(query).json()['response']

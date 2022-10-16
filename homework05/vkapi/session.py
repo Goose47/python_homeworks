@@ -38,9 +38,6 @@ class Session:
         while True:
             end_time = time.time()
             time_diff = end_time - start_time
-            # print(f'start_time: {start_time}')
-            # print(f'end_time: {end_time}')
-            # print(f'time_diff: {time_diff}')
 
             if retries_count > self.max_retries:
                 raise RetryError
@@ -59,21 +56,18 @@ class Session:
         retries_count = 0
         start_time = time.time()
         delay = 0
-        payload = kwargs['payload']
+        payload = kwargs['data']
 
         while True:
             end_time = time.time()
             time_diff = end_time - start_time
-            # print(f'start_time: {start_time}')
-            # print(f'end_time: {end_time}')
-            # print(f'time_diff: {time_diff}')
 
             if retries_count > self.max_retries:
                 raise RetryError
             if time_diff >= self.timeout:
                 raise ReadTimeout
             time.sleep(delay)
-            response = requests.get(self.base_url + url, data=payload)
+            response = requests.post(self.base_url + url, data=payload)
 
             if response.ok:
                 return response

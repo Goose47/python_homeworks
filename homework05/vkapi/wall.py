@@ -1,5 +1,6 @@
 import textwrap
 import time
+import math
 import typing as tp
 from string import Template
 
@@ -20,7 +21,30 @@ def get_posts_2500(
     extended: int = 0,
     fields: tp.Optional[tp.List[str]] = None,
 ) -> tp.Dict[str, tp.Any]:
-    pass
+    access_token = config.VK_CONFIG['access_token']
+    v = config.VK_CONFIG['version']
+
+    code = f"""return API.wall.get({{
+            "owner_id": "{owner_id}",
+            "domain": "{domain}",
+            "offset": {offset},
+            "count": "{count}",
+            "filter": "{filter}",
+            "extended": {extended},
+            "fields": "{fields}",
+            "v": "{v}"
+        }});"""
+
+    response = session.post(
+        url="/execute",
+        data={
+            'code': code,
+            'access_token': access_token,
+            'v': v
+        }
+    )
+
+    return response.json()['response']['items']
 
 
 def get_wall_execute(
@@ -49,4 +73,16 @@ def get_wall_execute(
     :param fields: Список дополнительных полей для профилей и сообществ, которые необходимо вернуть.
     :param progress: Callback для отображения прогресса.
     """
-    pass
+
+    data = []
+
+    requests_number = int(math.ceil(count / max_count))
+
+    for i in range(requests_number):
+        data_batch = get_posts_2500(owner_id, domain, max_count * i, count, max_count, filter, extended, fields)
+        data = data + data_batch
+        time.sleep(1)
+
+    df = pd.DataFrame(data)
+
+    return df
