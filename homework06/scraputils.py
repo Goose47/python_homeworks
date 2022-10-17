@@ -31,11 +31,12 @@ def extract_news(parser):
                     news_list[i]['author'] = td.span.a.contents[0]
                 anchor = td.span.findAll('a')[-1]
                 if anchor and not anchor.parent['class'][0] == 'age':
-                    news_list[i]['comments'] = int(anchor.contents[0].split('\xa0')[0])
+                    comments = anchor.contents[0].split('\xa0')[0]
+                    if not comments == 'discuss':
+                        news_list[i]['comments'] = int(comments)
                 if td.span.span:
                     news_list[i]['points'] = int(td.span.span.contents[0].split(' ')[0])
                     i += 1
-    del news_list[-1]
 
     return news_list
 
@@ -57,6 +58,8 @@ def get_news(url, n_pages=1):
         soup = BeautifulSoup(response.text, "html.parser")
         news_list = extract_news(soup)
         next_page = extract_next_page(soup)
+        if not next_page:
+            break
         url = "https://news.ycombinator.com/" + next_page
         news.extend(news_list)
         n_pages -= 1
