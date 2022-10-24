@@ -5,6 +5,7 @@ from bottle import (
 from scraputils import get_news
 from db import News, session
 from bayes import NaiveBayesClassifier
+import string
 
 
 @route("/news")
@@ -55,8 +56,21 @@ def update_news():
 
 @route("/classify")
 def classify_news():
-    # PUT YOUR CODE HERE
-    pass
+    s = session()
+    bayes = NaiveBayesClassifier(1e-5)
+    train_set = s.query(News).filter(News.label != None).all()
+    bayes.fit([clean(item.title).lower() for item in train_set], [item.label for item in train_set])
+    test_news = s.query(News).filter(News.label == None).all()
+    classified_news = bayes.predict([clean(item.title).lower() for item in test_news])
+    for i, item in enumerate(test_news):
+        item.label = classified_news[i]
+
+    return template('classified_template', rows=test_news)
+
+
+def clean(s):
+    translator = str.maketrans("", "", string.punctuation)
+    return s.translate(translator)
 
 
 if __name__ == "__main__":
