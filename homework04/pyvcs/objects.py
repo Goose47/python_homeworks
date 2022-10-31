@@ -22,8 +22,17 @@ def hash_object(data: bytes, fmt: str, write: bool = False) -> str:
 
 
 def resolve_object(obj_name: str, gitdir: pathlib.Path) -> tp.List[str]:
-    # PUT YOUR CODE HERE
-    ...
+    if 4 > len(obj_name) or len(obj_name) > 40:
+        raise Exception(f"Not a valid object name {obj_name}")
+    objects = repo_find() / "objects"
+    obj_list = []
+    for file in (objects / obj_name[:2]).glob("*"):
+        cur_obj_name = file.parent.name + file.name
+        if obj_name == cur_obj_name[: len(obj_name)]:
+            obj_list.append(cur_obj_name)
+    if not obj_list:
+        raise Exception(f"Not a valid object name {obj_name}")
+    return obj_list
 
 
 def find_object(obj_name: str, gitdir: pathlib.Path) -> str:
@@ -76,5 +85,11 @@ def find_tree_files(tree_sha: str, gitdir: pathlib.Path) -> tp.List[tp.Tuple[str
 
 
 def commit_parse(raw: bytes, start: int = 0, dct=None):
-    # PUT YOUR CODE HERE
-    ...
+    result: tp.Dict[str, tp.Any] = {"message": []}
+    for i in map(lambda x: x.decode(), raw.split(b"\n")):
+        if "tree" in i or "parent" in i or "author" in i or "committer" in i:
+            name, val = i.split(" ", maxsplit=1)
+            result[name] = val
+        else:
+            result["message"].append(i)
+    return result
